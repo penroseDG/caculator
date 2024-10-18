@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .calculator {
+            width: 320px;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .calculator-screen {
+            width: 100%;
+            height: 80px;
+            background-color: #222;
+            border: none;
+            color: #fff;
+            font-size: 2.5rem;
+            text-align: right;
+            padding-right: 20px;
+            padding-left: 10px;
+            border-radius: 10px;
+        }
+        button {
+            width: 70px;
+            height: 70px;
+            margin: 10px 5px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 10px;
+            background-color: #555;
+            color: white;
+            cursor: pointer;
+        }
+        button:active {
+            background-color: #666;
+        }
+        .operator {
+            background-color: #f39c12;
+        }
+        .all-clear {
+            background-color: #e74c3c;
+        }
+        .equal-sign {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="calculator-screen" value="" disabled />
+        <div class="calculator-keys">
+            <button type="button" class="operator" value="+">+</button>
+            <button type="button" class="operator" value="-">-</button>
+            <button type="button" class="operator" value="*">&times;</button>
+            <button type="button" class="operator" value="/">&divide;</button>
+
+            <button type="button" value="7">7</button>
+            <button type="button" value="8">8</button>
+            <button type="button" value="9">9</button>
+
+            <button type="button" value="4">4</button>
+            <button type="button" value="5">5</button>
+            <button type="button" value="6">6</button>
+
+            <button type="button" value="1">1</button>
+            <button type="button" value="2">2</button>
+            <button type="button" value="3">3</button>
+
+            <button type="button" value="0">0</button>
+            <button type="button" value=".">.</button>
+            <button type="button" class="all-clear" value="all-clear">AC</button>
+            <button type="button" class="equal-sign operator" value="=">=</button>
+        </div>
+    </div>
+
+    <script>
+        const calculatorScreen = document.querySelector('.calculator-screen');
+        const keys = document.querySelector('.calculator-keys');
+let currentInput = '0';
+        let previousInput = '';
+        let operator = null;
+
+        keys.addEventListener('click', event => {
+            const target = event.target;
+            const value = target.value;
+
+            if (!target.matches('button')) {
+                return;
+            }
+
+            switch (value) {
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                    handleOperator(value);
+                    break;
+                case '=':
+                    calculate();
+                    break;
+                case 'all-clear':
+                    clear();
+                    break;
+                default:
+                    handleNumber(value);
+                    break;
+            }
+
+            updateScreen();
+        });
+
+        function handleNumber(num) {
+            if (currentInput === '0') {
+                currentInput = num;
+            } else {
+                currentInput += num;
+            }
+        }
+
+        function handleOperator(op) {
+            if (operator === null) {
+                previousInput = currentInput;
+            } else if (operator) {
+                calculate();
+            }
+            operator = op;
+            currentInput = '0';
+        }
+
+        function calculate() {
+            let result = 0;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+
+            if (isNaN(prev) || isNaN(current)) return;
+
+            switch (operator) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            currentInput = result.toString();
+            operator = null;
+            previousInput = '';
+        }
+
+        function clear() {
+            currentInput = '0';
+            previousInput = '';
+            operator = null;
+        }
+
+        function updateScreen() {
+            calculatorScreen.value = currentInput;
+        }
+    </script>
+</body>
+</html>
